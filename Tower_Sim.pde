@@ -1035,7 +1035,7 @@ public class DungeonRewardTable{
     S1[24] = "Cobalt Bar";//Cobalt Bar
     S1[25] = "Crock Rags";//Crock Rags
     S1[26] = "Blue Ogrefish";//Blue Ogrefish
-    S1[27] = "Pellet Gum";//Pellet Gum
+    S1[27] = "Pellet Gun";//Pellet Gum
     S1[28] = "Munsk Chompers";//Munsk Chompers
     S1[29] = "Pack of Gum";//Pack of Gum
     S1[30] = "Lesser Dungeon Candy x7";//Lesser Dungeon Candy x7
@@ -2526,7 +2526,7 @@ public class FarmSim{
     }
   }
 
-  public void clearAll(){
+  public void clean(){
     run.removeAll(run);
     floor5.removeAll(floor5);
     floor10.removeAll(floor10);
@@ -3008,7 +3008,7 @@ public class FarmSim{
             fill(255);
             text("Return",170,888);
             if(mousePressed){
-              clearAll();
+              clean();
               generate = true;
               phaseThree = false;
               phaseOne = true;
@@ -3073,7 +3073,7 @@ public class FarmSim{
             fill(255);
             text("Return",170,888);
             if(mousePressed){
-              clearAll();
+              clean();
               generate = true;
               phaseThree = false;
               phaseOne = true;
@@ -3113,7 +3113,7 @@ public class FarmSim{
             fill(255);
             text("Return",170,888);
             if(mousePressed){
-              clearAll();
+              clean();
               generate = true;
               phaseThree = false;
               phaseOne = true;
