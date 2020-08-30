@@ -2938,6 +2938,17 @@ public class FarmSim{
     if(phaseTwo == false && phaseThree == true){
       if(generate == true){
         generate();
+        System.out.println(floor5);
+        System.out.println(floor10);
+        System.out.println(floor15);
+        System.out.println(floor20);
+        System.out.println(floor25);
+        System.out.println(floor30);
+        System.out.println(floor35);
+        System.out.println(floor40);
+        System.out.println(floor45);
+        System.out.println(floor50);
+        System.out.println(finalReward);
         generate = false;
       }
       if(floorLower == 5){
