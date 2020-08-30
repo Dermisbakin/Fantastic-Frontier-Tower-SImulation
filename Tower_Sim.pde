@@ -2219,7 +2219,7 @@ public class FarmSim{
       time += 0.01;
       if(time%farmTime == 0){
         run(floorLower, floorUpper);
-        FourtyFive.clear();
+        FourtyFive.removeAll(FourtyFive);
       }
     }
   }
@@ -2527,17 +2527,17 @@ public class FarmSim{
   }
 
   public void clearAll(){
-    run.clear();
-    floor5.clear();
-    floor10.clear();
-    floor15.clear();
-    floor20.clear();
-    floor25.clear();
-    floor30.clear();
-    floor35.clear();
-    floor40.clear();
-    floor45.clear();
-    floor50.clear();
+    run.removeAll(run);
+    floor5.removeAll(floor5);
+    floor10.removeAll(floor10);
+    floor15.removeAll(floor15);
+    floor20.removeAll(floor20);
+    floor25.removeAll(floor25);
+    floor30.removeAll(floor30);
+    floor35.removeAll(floor35);
+    floor40.removeAll(floor40);
+    floor45.removeAll(floor45);
+    floor50.removeAll(floor50);
   }
 
   public void singleRun(){
