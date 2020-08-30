@@ -2311,7 +2311,7 @@ public class FarmSim{
     }
   }
 
-  public void generate(){
+  public void generation(){
     ArrayList<String> one = new ArrayList<String>();
     if(floorLower <= 5 && floorUpper >= 5){
       floor5 = GenerateRewards(5);
@@ -2541,7 +2541,6 @@ public class FarmSim{
   }
 
   public void singleRun(){
-    int x = 0;
     textSize(50);
     if(phaseOne == true){
       textSize(40);
@@ -2937,7 +2936,7 @@ public class FarmSim{
     }
     if(phaseTwo == false && phaseThree == true){
       if(generate == true){
-        generate();
+        generation();
         generate = false;
       }
       if(floorLower == 5){
