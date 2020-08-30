@@ -2292,7 +2292,7 @@ public class FarmSim{
     }
   }
 
-  public void finalReward(){
+  public void finalRewardGen(){
     background(0);
     frameRate(1);
     frame++;
@@ -2996,7 +2996,7 @@ public class FarmSim{
           levelSim(50,"Soul of the Frontier",floor50);
         }
         if(floorPhase == 10){
-          finalReward();
+          finalRewardGen();
         }
         if(floorPhase == 11){
           summary();
@@ -3061,7 +3061,7 @@ public class FarmSim{
           levelSim(50,"Soul of the Frontier",floor50);
         }
         if(floorPhase == 6){
-          finalReward();
+          finalRewardGen();
         }
         if(floorPhase == 7){
           summary();
@@ -3101,7 +3101,7 @@ public class FarmSim{
           levelSim(50,"Soul of the Frontier",floor50);
         }
         if(floorPhase == 2){
-          finalReward();
+          finalRewardGen();
         }
         if(floorPhase == 3){
           summary();
