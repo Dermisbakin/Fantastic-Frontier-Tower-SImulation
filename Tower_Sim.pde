@@ -984,7 +984,7 @@ public class DungeonRewardTable{
     S2[24] = "Khaki Suit Pants";//Khaki Suit Pants
     S2[25] = "Antennae";//Antennae
     S2[26] = "Spikeout Chestpiece";//Spikeout Chestpiece
-    S2[27] = "Abandoned FLower";//Abandoned FLower
+    S2[27] = "Abandoned Flower";//Abandoned FLower
     S2[28] = "Rich Man's Delight";//Rich Man's Delight
     S2[29] = "Lesser Dungeon Candy x10";//Lesser Dungeon Candy x10
     S2[30] = "Fruitstack";//Fruitstack
@@ -1618,7 +1618,7 @@ public void picture(String obj, int x, int y, int x2, int y2){
   if(obj.equals("Void Lord Helmet")){
     image(voidLordHelmet,x,y,x2,y2);
   }
-  if(obj.equals("Void Lord Chestpiece")){
+  if(obj.equals("Void Lord Platebody")){
     image(voidLordChestpiece,x,y,x2,y2);
   }
   if(obj.equals("Void Lord Platelegs")){
@@ -1627,7 +1627,7 @@ public void picture(String obj, int x, int y, int x2, int y2){
   if(obj.equals("World Sculptor's Helmet")){
     image(worldSculptorsHelmet,x,y,x2,y2);
   }
-  if(obj.equals("World Sculptor's Armor")){
+  if(obj.equals("World Sculptor's Platebody")){
     image(worldSculptorsArmor,x,y,x2,y2);
   }
   if(obj.equals("World Sculptor's Platelegs")){
@@ -2129,6 +2129,17 @@ public long Avg(){
   }
 }
 
+public long avgPerHour(){
+  long sum = 0;
+  for(int i = 0; i < Mean.size(); i++){
+    sum = sum + Mean.get(i);
+  }
+  if (Mean.size() == 0 || (int)(Time.getTime()/60) == 0){ return 0;}
+  else {
+  return sum/((int)(Time.getTime()/60));
+  }
+}
+
 public void Combine(){
   if (Fifty.size() != 0){
     for(int i = 0; i < Fifty.size(); i++){
@@ -2151,32 +2162,93 @@ public int run(int x, int y){
   }
   //System.out.println(FourtyFive);
   Mean.add((long)total);
+  FourtyFive.removeAll(FourtyFive);
   total = 0;
   result = (int)Avg();
   return result;
 }
 
-public int Hour(int x){
-  long result = 0;
-  int mean = 0;
-  for(int i = 0; i < x ; i++){
-    Fifty = Spectra.conversion(GenerateRewards(45));
-    Combine();
-    Fifty = Spectra.conversion(GenerateRewards(50));
-    Fifty.add(Spectra.convert(Spectra.Reward("T5")));
+public void runGen(int x, int y){
+  for(int i = x; i <= y; i+=5){
+    Fifty = Spectra.conversion(GenerateRewards(i));
     Combine();
   }
-  for(int i = 0; i < FourtyFive.size() ; i++){
-    result = result + FourtyFive.get(i);
+  if(y == 50){
+    FourtyFive.add(Spectra.convert(Spectra.Reward("T5")));
   }
-  Mean.add(result);
+  for(int i = 0; i < FourtyFive.size(); i++){
+    total = total + FourtyFive.get(i);
+  }
+  Mean.add((long)total);
+  total = 0;
   FourtyFive.removeAll(FourtyFive);
-  mean = (int)Avg();
-  return mean;
 }
 
 public void mousePressed(){
 
+}
+
+public void keyPressed(){
+  if(Time.getPerHour() == true && Time.getPhaseThree() == true && Time.getFrame() == 0){
+    if(key>='0' && key<='9' || key == '.'){
+      Time.setMinutes(Time.getMinutes()+key);
+    }
+    if(key == BACKSPACE){
+      if(!Time.getMinutes().equals("")){
+        Time.setMinutes(Time.getMinutes().substring(0,Time.getMinutes().length()-1));
+      }
+    }
+    if(key == ENTER && !Time.getMinutes().equals("")){
+      Time.setFarmTime(Time.getFarmTime()+Double.parseDouble(Time.getMinutes()));
+      Time.setFrame(Time.getFrame()+1);
+      key = 'a';
+    }
+  }
+  if(Time.getPerHour() == true && Time.getPhaseThree() == true && Time.getFrame() == 1){
+    if(key>='0' && key<='9' || key == '.'){
+      Time.setSeconds(Time.getSeconds()+key);
+    }
+    if(key == BACKSPACE){
+      if(!Time.getSeconds().equals("")){
+        Time.setSeconds(Time.getSeconds().substring(0,Time.getSeconds().length()-1));
+      }
+    }
+    if(key == ENTER && !Time.getSeconds().equals("")){
+      double temp = Double.parseDouble(Time.getSeconds());
+      temp = temp/60;
+      String tempS = nf((float)temp,0,2);
+      temp = Double.parseDouble(tempS);
+      Time.setSeconds(temp + "");
+      Time.setFarmTime(Time.getFarmTime()+Double.parseDouble(Time.getSeconds()));
+      Time.setFrame(Time.getFrame()+1);
+      key = 'a';
+    }
+  }
+  if(key == ' '){
+    if(Time.getPerRun() == true && Time.getPhaseThree() == true){
+      if(Time.getGenerate() == false){
+        Time.setGenerate(true);
+      } else {
+        Time.setGenerate(false);
+      }
+    }
+    if(Time.getPerHour() == true && Time.getPhaseThree() == true && Time.getFrame() == 2){
+      if(Time.getGenerate() == false){
+        Time.setGenerate(true);
+      } else {
+        Time.setGenerate(false);
+      }
+    }
+  }
+}
+
+public double mod(double one, double two){
+  double mod = one;
+  while (mod >= two-1){
+    double what = round((float)(round((float)mod*100)-round((float)two*100)));
+    mod = what/100;
+  }
+  return mod;
 }
 
 public class FarmSim{
@@ -2185,7 +2257,7 @@ public class FarmSim{
   boolean timeFactor, phaseOne, phaseTwo, phaseThree, generate, perHour, perRun;
   ArrayList<String> floor5, floor10, floor15, floor20, floor25, floor30, floor35, floor40, floor45, floor50;
   ArrayList<ArrayList<String>> run;
-  String finalReward;
+  String finalReward, minutes, seconds;
   public FarmSim(){
     time = 0.00;
     farmTime = 0.0;
@@ -2201,6 +2273,8 @@ public class FarmSim{
     finalReward = "";
     perHour = false;
     perRun = false;
+    minutes = "";
+    seconds = "";
     floor5 = new ArrayList<String>();
     floor10 = new ArrayList<String>();
     floor15 = new ArrayList<String>();
@@ -2213,13 +2287,32 @@ public class FarmSim{
     floor50 = new ArrayList<String>();
     run = new ArrayList<ArrayList<String>>();
   }
+  public boolean getPerHour(){return perHour;}
+  public boolean getPerRun(){return perRun;}
+  public boolean getPhaseThree(){return phaseThree;}
+  public int getFrame(){return frame;}
+  public void setFrame(int l){frame = l;}
+  public String getMinutes(){return minutes;}
+  public String getSeconds(){return seconds;}
+  public void setMinutes(String m){minutes = m;}
+  public void setSeconds(String s){seconds = s;}
+  public double getFarmTime(){return farmTime;}
+  public void setFarmTime(double f){farmTime = f;}
+  public boolean getGenerate(){return generate;}
+  public void setGenerate(boolean g){generate = g;}
+  public double getTime(){return time;}
 
   public void tick(){
-    for(int i=0; i<10;i++){
-      time += 0.01;
-      if(time%farmTime == 0){
-        run(floorLower, floorUpper);
-        FourtyFive.removeAll(FourtyFive);
+    for(int y=0;y<10;y++){
+      for(int x=0;x<10;x++){
+        for(int i=0; i<10;i++){
+          String placeholder = "";
+          placeholder = String.format("%.2f", time + 0.01);
+          time = Double.parseDouble(placeholder);
+          if(mod(time,farmTime) == 0){
+            runGen(floorLower, floorUpper);
+          }
+        }
       }
     }
   }
@@ -2403,60 +2496,60 @@ public class FarmSim{
       textAlign(RIGHT);
       if(floor5.size() > 0){
         floorSummary(floor5,20,20);
-        text(addStrings(floor5) + "",780,90);
+        text(nfc(addStrings(floor5)),780,90);
       }
       if(floor10.size() > 0){
         floorSummary(floor10,20,170);
         text("+",780,165);
-        text(addStrings(floor10) + "",780,240);
+        text(nfc(addStrings(floor10)),780,240);
       }
       if(floor15.size() > 0){
         floorSummary(floor15,20,320);
         text("+",780,315);
-        text(addStrings(floor15) + "",780,390);
+        text(nfc(addStrings(floor15)),780,390);
       }
       if(floor20.size() > 0){
         floorSummary(floor20,20,470);
         text("+",780,465);
-        text(addStrings(floor20) + "",780,540);
+        text(nfc(addStrings(floor20)),780,540);
       }
       if(floor25.size() > 0){
         floorSummary(floor25,20,620);
         text("+",780,615);
-        text(addStrings(floor25) + "",780,690);
+        text(nfc(addStrings(floor25)),780,690);
       }
       if(floor30.size() > 0){
         floorSummary(floor30,900,20);
         text("+",780,765);
-        text(addStrings(floor30) + "",1660,90);
+        text(nfc(addStrings(floor30)),1660,90);
       }
       if(floor35.size() > 0){
         floorSummary(floor35,900,170);
         text("+",1660,165);
-        text(addStrings(floor35) + "",1660,240);
+        text(nfc(addStrings(floor35)),1660,240);
       }
       if(floor40.size() > 0){
         floorSummary(floor40,900,320);
         text("+",1660,315);
-        text(addStrings(floor40) + "",1660,390);
+        text(nfc(addStrings(floor40)),1660,390);
       }
       if(floor45.size() > 0){
         floorSummary(floor45,900,470);
         text("+",1660,465);
-        text(addStrings(floor45) + "",1660,540);
+        text(nfc(addStrings(floor45)),1660,540);
       }
       if(floor50.size() > 0){
         floorSummary(floor50,900,620);
         text("+",1660,615);
-        text(addStrings(floor50) + "",1660,690);
+        text(nfc(addStrings(floor50)),1660,690);
         text("+",1660,740);
         picture(finalReward,1350,770,100,100);
         rect(1300,720,100,100);
-        text(Spectra.convert(finalReward) + "",1660,790);
+        text(nfc(Spectra.convert(finalReward)),1660,790);
       }
       line(20,840,1780,840);
       fill(255, 240, 148);
-      text(addAll(run) + "",1660,920);
+      text(nfc(addAll(run)),1660,920);
       image(goldCoins,1710,920,50,50);
     }
 
@@ -2465,68 +2558,70 @@ public class FarmSim{
       if(floor25.size() > 0){
         FourtyFive.add(addStrings(floor25));
         floorSummary(floor25,20,20);
-        text(addStrings(floor25) + "",780,90);
+        text(nfc(addStrings(floor25)),780,90);
       }
       if(floor30.size() > 0){
         FourtyFive.add(addStrings(floor30));
         floorSummary(floor30,20,170);
         text("+",780,165);
-        text(addStrings(floor30) + "",780,240);
+        text(nfc(addStrings(floor30)),780,240);
       }
       if(floor35.size() > 0){
         FourtyFive.add(addStrings(floor35));
         floorSummary(floor35,20,320);
         text("+",780,315);
-        text(addStrings(floor35) + "",780,390);
+        text(nfc(addStrings(floor35)),780,390);
       }
       if(floor40.size() > 0){
         FourtyFive.add(addStrings(floor40));
         floorSummary(floor40,20,470);
         text("+",780,465);
-        text(addStrings(floor40) + "",780,540);
+        text(nfc(addStrings(floor40)),780,540);
       }
       if(floor45.size() > 0){
         FourtyFive.add(addStrings(floor45));
         floorSummary(floor45,20,620);
         text("+",780,615);
-        text(addStrings(floor45) + "",780,690);
+        text(nfc(addStrings(floor45)),780,690);
       }
       if(floor50.size() > 0){
         FourtyFive.add(addStrings(floor50));
         floorSummary(floor50,900,20);
         text("+",780,765);
-        text(addStrings(floor50) + "",1660,90);
+        text(nfc(addStrings(floor50)),1660,90);
         text("+",1660,170);
         picture(finalReward,1350,220,100,100);
         rect(1300,170,100,100);
-        text(Spectra.convert(finalReward) + "",1660,240);
+        text(nfc(Spectra.convert(finalReward)),1660,240);
       }
       line(20,840,1780,840);
-      text(addAll(run) + "",1660,920);
+      fill(255, 240, 148);
+      text(nfc(addAll(run)),1660,920);
     }
     if(floorLower == 45){
       textAlign(RIGHT);
       if(floor45.size() > 0){
         FourtyFive.add(addStrings(floor45));
         floorSummary(floor45,20,20);
-        text(addStrings(floor45) + "",780,90);
+        text(nfc(addStrings(floor45)),780,90);
       }
       if(floor50.size() > 0){
         FourtyFive.add(addStrings(floor50));
         floorSummary(floor50,20,170);
         text("+",780,165);
-        text(addStrings(floor50) + "",780,240);
+        text(nfc(addStrings(floor50)),780,240);
         text("+",780,300);
         picture(finalReward,470,330,100,100);
         rect(420,280,100,100);
-        text(Spectra.convert(finalReward) + "",780,360);
+        text(nfc(Spectra.convert(finalReward)),780,360);
       }
       line(20,390,1780,390);
-      text(addAll(run) + "",1660,470);
+      fill(255, 240, 148);
+      text(nfc(addAll(run)),1660,470);
     }
   }
 
-  public void clean(){
+  public void clearAll(){
     run.removeAll(run);
     floor5.removeAll(floor5);
     floor10.removeAll(floor10);
@@ -2541,8 +2636,18 @@ public class FarmSim{
   }
 
   public void singleRun(){
+    textSize(20);
+    fill(252, 231, 0);
+    if(perHour == true){
+      text("Per Hour Simulate: Active",1600,50);
+    }
+    if(perRun == true){
+      text("Per Run Simulate: Active",200,50);
+    }
     textSize(50);
+    fill(255);
     if(phaseOne == true){
+      clearAll();
       textSize(40);
       text("Choose a starting point:",900,320);
       text("Floor 1",350,635); 
@@ -2596,6 +2701,14 @@ public class FarmSim{
         rect(350,870,450,100,7);
         fill(175);
         text("Single Run Avg.",350,890);
+        if(mousePressed && perRun == false){
+          perRun = true;
+          perHour = false;
+          mousePressed = false;
+        } else if(mousePressed){
+          perRun = false;
+          mousePressed = false;
+        }
       } else {
         fill(0, 189, 50);
         rect(350,880,450,100,7);
@@ -2607,6 +2720,13 @@ public class FarmSim{
         rect(1450,870,450,100,7);
         fill(175);
         text("Per Hour Avg.",1450,890);
+        if(mousePressed && perHour == false){
+          perRun = false;
+          perHour = true;
+          mousePressed = false;
+        } else if(mousePressed){
+          perHour = false;
+        }
       } else {
         fill(169, 0, 0);
         rect(1450,880,450,100,7);
@@ -2934,7 +3054,7 @@ public class FarmSim{
         }
       }
     }
-    if(phaseTwo == false && phaseThree == true){
+    if(phaseTwo == false && phaseThree == true && perRun == false && perHour == false){
       if(generate == true){
         generation();
         generate = false;
@@ -3008,7 +3128,7 @@ public class FarmSim{
             fill(255);
             text("Return",170,888);
             if(mousePressed){
-              clean();
+              clearAll();
               generate = true;
               phaseThree = false;
               phaseOne = true;
@@ -3073,7 +3193,7 @@ public class FarmSim{
             fill(255);
             text("Return",170,888);
             if(mousePressed){
-              clean();
+              clearAll();
               generate = true;
               phaseThree = false;
               phaseOne = true;
@@ -3113,7 +3233,7 @@ public class FarmSim{
             fill(255);
             text("Return",170,888);
             if(mousePressed){
-              clean();
+              clearAll();
               generate = true;
               phaseThree = false;
               phaseOne = true;
@@ -3131,6 +3251,96 @@ public class FarmSim{
         }
       }
     }
+    if(perRun == true && phaseThree == true){
+        frameRate(60);
+        fill(255);
+        text("Your Average Per Run is:",900,400);
+        fill(255, 228, 94);
+        if(generate == true){
+          text(run(floorLower,floorUpper) + "",900,500);
+        } else {
+          text((int)Avg()+"",900,500);
+        }
+        if((45 < mouseX && mouseX < 295) && (820 < mouseY && mouseY < 920)){
+            rectMode(CENTER);
+            textAlign(CENTER);
+            fill(0, 157, 219);
+            rect(170,870,250,100,7);
+            fill(255);
+            text("Return",170,888);
+            if(mousePressed){
+              Mean.removeAll(Mean);
+              phaseThree = false;
+              phaseOne = true;
+              mousePressed = false;
+            }
+          } else {
+            rectMode(CENTER);
+            textAlign(CENTER);
+            fill(0, 135, 189);
+            rect(170,880,250,100,7);
+            fill(255);
+            text("Return",170,898);
+          }
+      }
+
+      if(perHour == true && phaseThree == true){
+        frameRate(300);
+        if(frame == 0){
+          fill(255);
+          text("Input your run duration in minutes and seconds.",900,300);
+          textAlign(RIGHT);
+          text("Minutes: ",895,500);
+          textAlign(LEFT);
+          text(minutes,905,500);
+        }
+        if(frame == 1){
+          fill(255);
+          text("Input your run duration in minutes and seconds.",900,300);
+          textAlign(RIGHT);
+          text("Seconds: ",895,500);
+          textAlign(LEFT);
+          text(seconds,905,500);
+        }
+        if(frame == 2){
+          fill(255);
+          text("Time: " + time,900,300);
+          text("Your Average Per Run is:",900,400);
+          fill(255, 228, 94);
+          if(generate == true){
+            tick();
+            text((int)avgPerHour() + "",900,500);
+          } else {
+            text((int)avgPerHour() + "",900,500);
+          }
+          if((45 < mouseX && mouseX < 295) && (820 < mouseY && mouseY < 920)){
+            rectMode(CENTER);
+            textAlign(CENTER);
+            fill(0, 157, 219);
+            rect(170,870,250,100,7);
+            fill(255);
+            text("Return",170,888);
+            if(mousePressed){
+              Mean.removeAll(Mean);
+              minutes = "";
+              seconds = "";
+              farmTime = 0;
+              time = 0;
+              frame = 0;
+              phaseThree = false;
+              phaseOne = true;
+              mousePressed = false;
+            }
+          } else {
+            rectMode(CENTER);
+            textAlign(CENTER);
+            fill(0, 135, 189);
+            rect(170,880,250,100,7);
+            fill(255);
+            text("Return",170,898);
+          }
+        }
+      }
   }
 }
 
