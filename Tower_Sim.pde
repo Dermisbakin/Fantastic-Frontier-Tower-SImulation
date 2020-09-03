@@ -3257,7 +3257,7 @@ public class FarmSim{
         text("Your Average Per Run is:",900,400);
         fill(255, 228, 94);
         if(generate == true){
-          text(run(floorLower,floorUpper) + "",900,500);
+          text(nfc(run(floorLower,floorUpper)),900,500);
         } else {
           text((int)Avg()+"",900,500);
         }
@@ -3309,9 +3309,9 @@ public class FarmSim{
           fill(255, 228, 94);
           if(generate == true){
             tick();
-            text((int)avgPerHour() + "",900,500);
+            text(nfc((int)avgPerHour()),900,500);
           } else {
-            text((int)avgPerHour() + "",900,500);
+            text(nfc((int)avgPerHour()),900,500);
           }
           if((45 < mouseX && mouseX < 295) && (820 < mouseY && mouseY < 920)){
             rectMode(CENTER);
